@@ -55,7 +55,7 @@ def main():
 	for test in (
 		({"#000000", "#778899"}, '#3C444C'),
 	):
-		pass
+		pass  # TODO
 		# assert blend(test[0]) == test[1].lower()
 
 
