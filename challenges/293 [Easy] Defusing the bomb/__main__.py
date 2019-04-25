@@ -24,6 +24,66 @@ class Wire:
 		'PURPLE'
 	]
 
+	id_of: int = -1
+	# Allow any by default.
+	allowed: tuple = (0, 1, 2, 3, 4, 5)
+
+
+class WireWhite(Wire):
+	name: str = "WHITE"
+	id_of: int = 0
+	allowed: tuple = (
+		Wire.RED,
+		Wire.ORANGE,
+		Wire.GREEN,
+		Wire.PURPLE
+	)
+
+
+class WireRed(Wire):
+	name: str = "RED"
+	id_of: int = 1
+	allowed: tuple = (
+		Wire.GREEN,
+	)
+
+
+class WireBlack(Wire):
+	name: str = "BLACK"
+	id_of: int = 2
+	allowed: tuple = (
+		Wire.RED,
+		Wire.BLACK,
+		Wire.PURPLE
+	)
+
+
+class WireOrange(Wire):
+	name: str = "ORANGE"
+	id_of: int = 3
+	allowed: tuple = (
+		Wire.RED,
+		Wire.BLACK
+	)
+
+
+class WireGreen(Wire):
+	name: str = "GREEN"
+	id_of: int = 4
+	allowed: tuple = (
+		Wire.WHITE,
+		Wire.ORANGE
+	)
+
+
+class WirePurple(Wire):
+	name: str = "PURPLE"
+	id_of: int = 5
+	allowed: tuple = (
+		Wire.RED,
+		Wire.BLACK
+	)
+
 
 class Bomb:
 
@@ -37,65 +97,22 @@ class Bomb:
 		'EXPLODED'
 	]
 
-	status = 0
-
-	must_cut: set = set()
-	can_not_cut: set = set()
+	# Defused is default, seemingly.
+	status = 1
 
 	wires_cut: int = 0
 
+	last_cut: Wire = Wire
+
 	def cut(self, wire):
 		print('Step {}: Cutting wire {}'.format(
-			self.wires_cut + 1, Wire.WIRE_STRINGS[wire]
+			self.wires_cut + 1, wire.name
 		))
 
-		if wire in self.can_not_cut:
-			print(
-				'Explode: wire {} must not be any of {}'.format(
-					Wire.WIRE_STRINGS[wire],
-					', '.join([
-						Wire.WIRE_STRINGS[i] for i, _ in enumerate(
-							self.can_not_cut
-						)
-					])
-				)
-			)
+		if wire.id_of not in self.last_cut.allowed:
 			self.explode()
-		else:
-			self.can_not_cut = set()
 
-		if len(self.must_cut) > 0:
-			if wire not in self.must_cut:
-				self.explode()
-			else:
-				self.must_cut = set()
-
-		if wire == Wire.WHITE:
-			print('Next step: Can not cut WHITE or BLACK.')
-			self.can_not_cut = {Wire.WHITE, Wire.BLACK}
-
-		elif wire == Wire.RED:
-			print('Next step: Must cut GREEN.')
-			self.must_cut = {Wire.GREEN}
-
-		elif wire == Wire.BLACK:
-			# if Wire.WHITE in self.cut_wires or Wire.GREEN in self.cut_wires \
-			# 	or Wire.ORANGE in self.cut_wires:
-			# 	self.explode()
-			print('Next step: Can not cut WHITE, GREEN, ORANGE.')
-			self.can_not_cut = {Wire.WHITE, Wire.GREEN, Wire.ORANGE}
-
-		elif wire == Wire.ORANGE:
-			print('Next step: Must cut RED or BLACK.')
-			self.must_cut = {Wire.RED, Wire.BLACK}
-
-		elif wire == Wire.GREEN:
-			print('Next step: Must cut ORANGE or WHITE.')
-			self.must_cut = {Wire.ORANGE, Wire.WHITE}
-
-		elif wire == Wire.PURPLE:
-			print('Next step: Can not cut PURPLE, GREEN, ORANGE, WHITE.')
-			self.can_not_cut = {Wire.PURPLE, Wire.GREEN, Wire.ORANGE, Wire.WHITE}
+		self.last_cut = wire
 
 		self.wires_cut += 1
 
@@ -107,23 +124,23 @@ def main():
 	for test in (
 		(
 			(),
-			Bomb.UNKNOWN
+			Bomb.DEFUSED
 		),
 		(
 			(
-				Wire.WHITE,
-				Wire.RED,
-				Wire.GREEN,
-				Wire.WHITE
+				WireWhite,
+				WireRed,
+				WireGreen,
+				WireWhite
 			),
 			Bomb.DEFUSED
 		),
 		(
 			(
-				Wire.WHITE,
-				Wire.ORANGE,
-				Wire.GREEN,
-				Wire.WHITE
+				WireWhite,
+				WireOrange,
+				WireGreen,
+				WireWhite
 			),
 			Bomb.EXPLODED
 		)
