@@ -15,15 +15,6 @@ class Wire:
 	GREEN: int = 4
 	PURPLE: int = 5
 
-	WIRE_STRINGS: List[str] = [
-		'WHITE',
-		'RED',
-		'BLACK',
-		'ORANGE',
-		'GREEN',
-		'PURPLE'
-	]
-
 	id_of: int = -1
 	# Allow any by default.
 	allowed: tuple = (0, 1, 2, 3, 4, 5)
@@ -90,12 +81,6 @@ class Bomb:
 	UNKNOWN: int = 0
 	DEFUSED: int = 1
 	EXPLODED: int = 2
-
-	STATUS_STRINGS: List[str] = [
-		'UNKNOWN',
-		'DEFUSED',
-		'EXPLODED'
-	]
 
 	# Defused is default, seemingly.
 	status = 1
